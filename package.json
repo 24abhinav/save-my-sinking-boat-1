@@ -4,7 +4,7 @@
   "description": "Full Stack Developer Training POC",
   "main": "index.js",
   "scripts": {
-    "clean": "mkdir -p public && rimraf public/* && cp client/index.html public/index.html",
+    "clean": "rimraf -p public && mkdir -p public && cp client/index.html public/index.html",
     "deploy": "npm run clean && sudo npm run client-dist && pm2 start client/server.js -n \"save-my-sinking-boat\" && pm2 start api/server.js -n \"save-my-sinking-boat\"",
     "serve-api": "nodemon --exec babel-node api/server.js",
     "start-api": "babel-node api/server.js",
