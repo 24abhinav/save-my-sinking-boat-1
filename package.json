@@ -31,7 +31,7 @@
     "foundation-sites": "6.2.4",
     "immutable": "^3.8.1",
     "jade": "^1.9.1",
-    "mongoose": "^4.4.1",
+    "mongoose": "^5.9.10",
     "morgan": "^1.5.1",
     "motion-ui": "^1.2.2",
     "passport": "^0.2.1",
