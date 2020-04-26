@@ -4,6 +4,7 @@
   "description": "Full Stack Developer Training POC",
   "main": "index.js",
   "scripts": {
+    "rimraf": "./node_modules/rimraf/bin.js",
     "clean": "rimraf public && mkdir public && cp client/index.html public/index.html",
     "deploy": "npm run clean && sudo npm run client-dist && pm2 start client/server.js -n \"save-my-sinking-boat\" && pm2 start api/server.js -n \"save-my-sinking-boat\"",
     "serve-api": "nodemon --exec babel-node api/server.js",
@@ -76,6 +77,7 @@
     "webpack": "^1.13.1"
   },
   "engines": {
-    "node": "12.x.x"
+    "node": "12.x.x",
+    "npm": "6.x"
   }
 }
