@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const { Schema } = mongoose
+const { Schema } = mongoose;
 
 const Post = new Schema({
   name: String,
@@ -8,6 +8,6 @@ const Post = new Schema({
   points: Number,
   author: String,
   content: String
-})
+});
 
-export default mongoose.model('Post', Post)
+export default mongoose.model("Post", Post);

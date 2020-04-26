@@ -1,118 +1,113 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import request from 'superagent'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import request from "superagent";
 
-import 'styles/postEditor.scss'
-import * as postActions from 'actions/postActions'
-import { apiServiceUrl } from 'config/api'
+import "styles/postEditor.scss";
+import * as postActions from "actions/postActions";
+import { apiServiceUrl } from "config/api";
 
 export class PostEditor extends Component {
   submit() {
     const {
-      postNameInput: { value : postName },
-      descriptionInput: { value : description },
-      contentInput: { value : content },
+      postNameInput: { value: postName },
+      contentInput: { value: content },
       indicatorText,
       submitBtn
-    } = this.refs
+    } = this.refs;
     if (!postName) {
-      indicatorText.innerHTML = 'Please provide post name'
-      return
-    }
-    if (!description) {
-      indicatorText.innerHTML = 'Please provide description'
-      return
+      indicatorText.innerHTML = "Please write a subject";
+      return;
     }
     if (!content) {
-      indicatorText.innerHTML = 'Please provide content'
-      return
+      indicatorText.innerHTML = "Please write the question";
+      return;
     }
 
-    submitBtn.disabled = true
-    indicatorText.innerHTML = 'Request sending.'
+    submitBtn.disabled = true;
+    indicatorText.innerHTML = "Request sending.";
 
-    const { username, password, getPosts } = this.props
+    const { username, password, getPosts } = this.props;
     request
       .post(`${apiServiceUrl}post`)
-      .auth(username ,password)
+      .auth(username, password)
       .send({
         name: postName,
-        description,
+        description: "-",
         content,
         points: 0,
         author: username
       })
-      .set('Accept', 'application/json')
+      .set("Accept", "application/json")
       .end((err, res) => {
-        submitBtn.disabled = false
+        submitBtn.disabled = false;
         if (err) {
-          indicatorText.innerHTML = 'Sorry, some thing broken in server, please contact David Guan(DavidGuanDev@Gmail.com)'
-          console.error(err)
-          return
+          indicatorText.innerHTML = "Sorry, some thing broken in server!";
+          console.error(err);
+          return;
         }
         if (res.body.err) {
-          indicatorText.innerHTML = res.body.err
-          return
+          indicatorText.innerHTML = res.body.err;
+          return;
         }
-        indicatorText.innerHTML = 'Thanks for your post!!'
-        getPosts()
-      })
+        this.refs.postNameInput.value = "";
+        this.refs.contentInput.value = "";
+        indicatorText.innerHTML = "Question posted successfully!";
+        getPosts();
+      });
   }
 
   render() {
-    const { alreadyLogin } = this.props
+    const { alreadyLogin } = this.props;
     if (alreadyLogin) {
       return (
-        <div className='PostEditor'>
+        <div className="PostEditor">
           <input
-            ref='postNameInput'
-            type='text'
-            placeholder='postName'
+            ref="postNameInput"
+            type="text"
+            placeholder="Question Subject"
           />
           <input
-            className='description'
-            ref='descriptionInput'
-            type='text'
-            placeholder='description'
-          />
-          <input
-            className='content'
-            ref='contentInput'
-            type='text'
-            placeholder='content'
+            className="content"
+            ref="contentInput"
+            type="text"
+            placeholder="Question Description"
           />
           <button
-            className='button'
+            className="button"
             onClick={this.submit.bind(this)}
-            ref='submitBtn'
+            ref="submitBtn"
           >
             Submit
           </button>
-          <p ref='indicatorText'></p>
+          <p ref="indicatorText"></p>
         </div>
-      )
+      );
     } else {
       return (
-        <p>Please login or signup for post submit</p>
-      )
+        <p style={{ textAlign: "center", color: "red" }}>
+          PLEASE LOGIN OR SIGNUP TO POST A QUESTION.
+        </p>
+      );
     }
   }
 }
 
 function mapStateToProps(state) {
   return {
-    alreadyLogin: state.user.get('alreadyLogin'),
-    username: state.user.get('username'),
-    password: state.user.get('password')
-  }
+    alreadyLogin: state.user.get("alreadyLogin"),
+    username: state.user.get("username"),
+    password: state.user.get("password")
+  };
 }
-
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getPosts: postActions.getPosts
-  }, dispatch)
+  return bindActionCreators(
+    {
+      getPosts: postActions.getPosts
+    },
+    dispatch
+  );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostEditor)
+export default connect(mapStateToProps, mapDispatchToProps)(PostEditor);

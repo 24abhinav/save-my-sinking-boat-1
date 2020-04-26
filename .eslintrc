@@ -16,7 +16,7 @@
   },
   "rules": {
     "comma-dangle": 1,
-    "quotes": [2, "single"],
+    "quotes": [2, "double"],
     "no-undef": 2,
     "global-strict": 0,
     "no-extra-semi": 1,

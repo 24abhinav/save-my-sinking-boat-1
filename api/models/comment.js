@@ -1,11 +1,12 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const { Schema } = mongoose
+const { Schema } = mongoose;
 
 const Comment = new Schema({
   content: String,
   postId: String,
-  author: String
-})
+  author: String,
+  points: Number
+});
 
-export default mongoose.model('Comment', Comment)
+export default mongoose.model("Comment", Comment);

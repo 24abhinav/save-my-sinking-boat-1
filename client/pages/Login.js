@@ -1,73 +1,77 @@
-import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import request from 'superagent'
-import { connect } from 'react-redux'
+import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import request from "superagent";
+import { connect } from "react-redux";
 
-import * as userActions from 'actions/userActions'
-import { apiServiceUrl } from 'config/api'
+import * as userActions from "actions/userActions";
+import { apiServiceUrl } from "config/api";
 
 export class Login extends Component {
   submit() {
     const {
-      usernameInput: { value : username },
-      passwordInput: { value : password },
+      usernameInput: { value: username },
+      passwordInput: { value: password },
       indicatorText,
       submitBtn
-    } = this.refs
-    const { changeLoginState } = this.props
+    } = this.refs;
+    const { changeLoginState } = this.props;
 
     if (!username || !password) {
-      indicatorText.innerHTML = 'Please provide username and password.'
-      return
+      indicatorText.innerHTML = "Please provide username and password.";
+      return;
     }
 
-    submitBtn.disabled = true
-    indicatorText.innerHTML = 'Request sending.'
+    submitBtn.disabled = true;
+    indicatorText.innerHTML = "Request sending.";
 
     request
       .post(`${apiServiceUrl}login`)
-      .auth(username ,password)
-      .set('Accept', 'application/json')
+      .auth(username, password)
+      .set("Accept", "application/json")
       .end((err, res) => {
-        submitBtn.disabled = false
+        submitBtn.disabled = false;
         if (err) {
-          indicatorText.innerHTML = 'Username or password incorrect'
-          console.error(err)
-          return
+          indicatorText.innerHTML = "Username or password incorrect";
+          console.error(err);
+          return;
         }
 
-        changeLoginState(username, password, res.body.data)
-        this.context.router.push('/')
-      })
+        changeLoginState(username, password, res.body.data);
+        this.context.router.push("/");
+      });
   }
 
   render() {
     return (
-      <div>
-        <input ref='usernameInput' type='text' placeholder='username'/>
-        <input ref='passwordInput' type='password' placeholder='password'/>
-        <button
-          className='button'
-          onClick={this.submit.bind(this)}
-          ref='submitBtn'
-        >
-          Log In
-        </button>
-        <p ref='indicatorText'></p>
+      <div is align="center">
+        <div style={{ width: "fit-content" }}>
+          <input ref="usernameInput" type="text" placeholder="username" />
+          <input ref="passwordInput" type="password" placeholder="password" />
+          <button
+            className="button"
+            onClick={this.submit.bind(this)}
+            ref="submitBtn"
+          >
+            Log In
+          </button>
+          <p style={{ color: "red" }} ref="indicatorText"></p>
+        </div>
       </div>
-    )
+    );
   }
 }
 
 Login.contextTypes = {
   router: React.PropTypes.object.isRequired
-}
-
+};
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    changeLoginState: userActions.changeLoginState
-  }, dispatch)
+  return bindActionCreators(
+    {
+      changeLoginState: userActions.changeLoginState
+    },
+    dispatch
+  );
 }
 
-export default connect(null, mapDispatchToProps)(Login)
+export default connect(null, mapDispatchToProps)(Login);

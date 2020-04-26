@@ -1,96 +1,101 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import request from 'superagent'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import request from "superagent";
 
-import 'styles/commentEditor.scss'
-import * as postActions from 'actions/postActions'
-import { apiServiceUrl } from 'config/api'
+import "styles/commentEditor.scss";
+import * as postActions from "actions/postActions";
+import { apiServiceUrl } from "config/api";
 
 export class CommentEditor extends Component {
   submit() {
     const {
-      contentInput: { value : content },
+      contentInput: { value: content },
       indicatorText,
       submitBtn
-    } = this.refs
+    } = this.refs;
 
     if (!content) {
-      indicatorText.innerHTML = 'Please provide content'
-      return
+      indicatorText.innerHTML = "Please write an answer";
+      return;
     }
 
-    submitBtn.disabled = true
-    indicatorText.innerHTML = 'Request sending.'
+    submitBtn.disabled = true;
+    indicatorText.innerHTML = "Request sending.";
 
-    const { username, password, postId, commentUploaded  } = this.props
+    const { username, password, postId, commentUploaded } = this.props;
     request
       .post(`${apiServiceUrl}comment`)
-      .auth(username ,password)
+      .auth(username, password)
       .send({
         content,
         author: username,
         postId
       })
-      .set('Accept', 'application/json')
+      .set("Accept", "application/json")
       .end((err, res) => {
-        submitBtn.disabled = false
+        submitBtn.disabled = false;
         if (err) {
-          indicatorText.innerHTML = 'Sorry, some thing broken in server, please contact David Guan(DavidGuanDev@Gmail.com)'
-          console.error(err)
-          return
+          indicatorText.innerHTML = "Sorry, some thing broken in server!";
+          console.error(err);
+          return;
         }
         if (res.body.err) {
-          indicatorText.innerHTML = res.body.err
-          return
+          indicatorText.innerHTML = res.body.err;
+          return;
         }
-        indicatorText.innerHTML = 'Thanks for your comment!!'
-        commentUploaded && commentUploaded()
-      })
+        indicatorText.innerHTML = "Thanks for your answer!!";
+        this.refs.contentInput.value = "";
+        commentUploaded && commentUploaded();
+      });
   }
 
   render() {
-    const { alreadyLogin } = this.props
+    const { alreadyLogin } = this.props;
     return (
-      <div className='CommentEditor'>
-        <input
-          className='content'
-          ref='contentInput'
-          type='text'
-          placeholder='content'
-        />
-        {
-          alreadyLogin ? (
+      <div className="CommentEditor">
+        {alreadyLogin ? (
+          <div>
+            <input
+              className="content"
+              ref="contentInput"
+              type="text"
+              placeholder="Answer"
+            />
             <button
-              className='button'
+              className="button"
               onClick={this.submit.bind(this)}
-              ref='submitBtn'
+              ref="submitBtn"
             >
               Submit
             </button>
-          ) : (
-            <p>Please login or signup for post submit</p>
-          )
-        }
-        <p ref='indicatorText'></p>
+          </div>
+        ) : (
+          <p style={{ textAlign: "center", color: "red" }}>
+            PLEASE LOGIN OR SIGNUP TO POST AN ANSWER.
+          </p>
+        )}
+        <p ref="indicatorText"></p>
       </div>
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    alreadyLogin: state.user.get('alreadyLogin'),
-    username: state.user.get('username'),
-    password: state.user.get('password')
-  }
+    alreadyLogin: state.user.get("alreadyLogin"),
+    username: state.user.get("username"),
+    password: state.user.get("password")
+  };
 }
-
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getPosts: postActions.getPosts
-  }, dispatch)
+  return bindActionCreators(
+    {
+      getPosts: postActions.getPosts
+    },
+    dispatch
+  );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentEditor)
+export default connect(mapStateToProps, mapDispatchToProps)(CommentEditor);
