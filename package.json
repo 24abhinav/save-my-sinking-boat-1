@@ -4,7 +4,7 @@
   "description": "Full Stack Developer Training POC",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf -p public && mkdir -p public && cp client/index.html public/index.html",
+    "clean": "rimraf public && mkdir public && cp client/index.html public/index.html",
     "deploy": "npm run clean && sudo npm run client-dist && pm2 start client/server.js -n \"save-my-sinking-boat\" && pm2 start api/server.js -n \"save-my-sinking-boat\"",
     "serve-api": "nodemon --exec babel-node api/server.js",
     "start-api": "babel-node api/server.js",
@@ -42,7 +42,8 @@
     "redux": "^3.5.2",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",
-    "superagent": "^2.0.0"
+    "superagent": "^2.0.0",
+    "concurrently": "^5.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
